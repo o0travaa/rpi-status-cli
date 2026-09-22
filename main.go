@@ -19,6 +19,7 @@ func main() {
 			fmt.Println("Available commands:")
 			fmt.Println("checknet - check the internet connection")
 			fmt.Println("showcfg - display the Raspberry Pi boot configuration")
+			fmt.Println("t - check temperature")
 		case "showcfg":
 			cmd := exec.Command(path)
 			output, err := cmd.Output()
@@ -39,6 +40,14 @@ func main() {
 			output, err := cmd.Output()
 			if err != nil {
 				fmt.Printf("%v\n", err)
+			}
+			fmt.Println(string(output))
+		case "t":
+			cmd := exec.Command("sh", "-c", "paste <(cat /sys/class/thermal/thermal_zone*/type) <(cat /sys/class/thermal/thermal_zone*/temp) | awk '{print $1 \" : \" $2/1000 \"°C\"}'")
+			output, err := cmd.Output()
+			if err != nil {
+				fmt.Printf("%v\n", err)
+				return
 			}
 			fmt.Println(string(output))
 		}
